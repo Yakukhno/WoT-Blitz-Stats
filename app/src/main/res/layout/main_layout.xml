@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    android:clickable="false">
+
+
+    <EditText
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/editNickname"
+        android:textSize="22dp"
+        android:background="@android:color/white"
+        android:layout_above="@+id/btnGo"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:hint="Enter nickname" />
+
+    <Button
+        android:layout_width="100dp"
+        android:layout_height="40dp"
+        android:text="Go"
+        android:textColor="@android:color/white"
+        android:id="@+id/btnGo"
+        android:background="@drawable/button"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Press Go"
+        android:id="@+id/txtBattles"
+        android:layout_below="@+id/btnGo"
+        android:layout_centerHorizontal="true"
+        android:textColor="@android:color/white"/>
+</RelativeLayout>
