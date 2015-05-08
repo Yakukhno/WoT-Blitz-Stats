@@ -2,16 +2,13 @@ package com.example.ivan.wotblitzstats;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.JsonReader;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
+import com.rey.material.widget.EditText;
 import android.widget.TextView;
 
 import com.example.ivan.http.FetchHttp;
@@ -53,6 +50,21 @@ public class MainActivity extends Activity {
             }
         });
 
+//        btnGo.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View v, MotionEvent event) {
+//                switch (event.getAction()) {
+//                    case (MotionEvent.ACTION_DOWN) :
+////                        btnGo.setBackground(Drawable.createFromPath("@color/button_material_light"));
+//                        break;
+//                    case (MotionEvent.ACTION_CANCEL) :
+//                        break;
+//                }
+//                return true;
+//            }
+//        });
+
+
     }
 
     private class FetchItemsTask extends AsyncTask<Void, String, Void> {
@@ -66,7 +78,11 @@ public class MainActivity extends Activity {
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            txtBattles.setText("Battles : " + battles);
+            if (battles != -1) {
+                txtBattles.setText("Battles : " + battles);
+            } else {
+                txtBattles.setText("Please, enter nickname");
+            }
         }
 
         @Override
@@ -93,6 +109,7 @@ public class MainActivity extends Activity {
                 Log.e(TAG, "Failed!", ioe);
             } catch (JSONException e) {
                 Log.e(TAG, "Failed!", e);
+                battles = -1;
             }
             return null;
         }
