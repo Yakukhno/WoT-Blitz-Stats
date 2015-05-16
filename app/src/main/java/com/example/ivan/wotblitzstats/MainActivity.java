@@ -1,14 +1,14 @@
 package com.example.ivan.wotblitzstats;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import com.rey.material.widget.EditText;
+import android.widget.EditText;
+
 import android.widget.TextView;
 
 import com.example.ivan.http.FetchHttp;
@@ -17,6 +17,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class MainActivity extends Activity {
 
@@ -26,13 +27,16 @@ public class MainActivity extends Activity {
     private static final String PERSONAL_DATA = "account/info/";
     private static final String PLAYERS = "account/list/";
 
+    private static final boolean LOADING_STATUS = false;
+
     private String nickname;
+    private ArrayList<Integer> usersID = new ArrayList<>();
+    private ArrayList<String> users = new ArrayList<>();
 
     private Button btnGo;
     private TextView txtBattles;
     private EditText editNickname;
 
-    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,30 +50,17 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 nickname = editNickname.getText().toString();
-                new FetchItemsTask().execute();
+                new LoadStatsTask().execute();
             }
         });
 
-//        btnGo.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                switch (event.getAction()) {
-//                    case (MotionEvent.ACTION_DOWN) :
-////                        btnGo.setBackground(Drawable.createFromPath("@color/button_material_light"));
-//                        break;
-//                    case (MotionEvent.ACTION_CANCEL) :
-//                        break;
-//                }
-//                return true;
-//            }
-//        });
-
-
     }
 
-    private class FetchItemsTask extends AsyncTask<Void, String, Void> {
+    private class LoadStatsTask extends AsyncTask<Void, String, Void> {
 
         private int battles;
+        private int wins;
+        private int account_id;
 
         @Override
         protected void onPreExecute() {
@@ -78,11 +69,17 @@ public class MainActivity extends Activity {
 
         @Override
         protected void onPostExecute(Void aVoid) {
+
             if (battles != -1) {
-                txtBattles.setText("Battles : " + battles);
+                Intent intent = new Intent(getApplicationContext(), StatsActivity.class);
+                intent.putExtra("battles", battles);
+                intent.putExtra("wins", wins);
+                startActivity(intent);
+                txtBattles.setText("");
             } else {
-                txtBattles.setText("Please, enter nickname");
+                txtBattles.setText("Please, enter correct nickname");
             }
+
         }
 
         @Override
@@ -98,13 +95,32 @@ public class MainActivity extends Activity {
                 publishProgress(".");
                 jsonID = new JSONObject(new FetchHttp().getUrl(URL + PLAYERS
                         + "?application_id=" + APPLICATION_ID + "&search=" + nickname));
-                int account_id = (int) jsonID.getJSONArray("data").getJSONObject(0).get("account_id");
+                int k = 0;
+                String searchNickname;
+                for (int i = 0; i < jsonID.getJSONObject("meta").getInt("count"); i++) {
+                    searchNickname = jsonID.getJSONArray("data").getJSONObject(i)
+                            .get("nickname").toString();
+                    if (nickname.equalsIgnoreCase(searchNickname)) {
+                        Log.i("enter", "enter");
+                        account_id = (int) jsonID.getJSONArray("data").getJSONObject(0).get("account_id");
+                        break;
+                    } else {
+                        k++;
+                    }
+                }
+                if (k == jsonID.getJSONObject("meta").getInt("count")) {
+                    account_id = -1;
+                    battles = -1;
+                }
+                Log.i("account", String.valueOf(account_id));
+                Log.i("account", Integer.toString(jsonID.getJSONObject("meta").getInt("count")));
                 publishProgress("..");
-                String data = new FetchHttp().getUrl(URL + PERSONAL_DATA + "?application_id="
-                        + APPLICATION_ID + "&account_id=" + account_id);
+                String data = getUserName(account_id);
                 jsonData = new JSONObject(data);
                 battles = (int) jsonData.getJSONObject("data").getJSONObject(Integer.toString(account_id))
                         .getJSONObject("statistics").getJSONObject("all").get("battles");
+                wins = (int) jsonData.getJSONObject("data").getJSONObject(Integer.toString(account_id))
+                        .getJSONObject("statistics").getJSONObject("all").get("wins");
             } catch (IOException ioe) {
                 Log.e(TAG, "Failed!", ioe);
             } catch (JSONException e) {
@@ -113,6 +129,12 @@ public class MainActivity extends Activity {
             }
             return null;
         }
+
+        public String getUserName(int account_id) throws IOException {
+            return new FetchHttp().getUrl(URL + PERSONAL_DATA + "?application_id="
+                    + APPLICATION_ID + "&account_id=" + account_id);
+        }
+
     }
 
 }

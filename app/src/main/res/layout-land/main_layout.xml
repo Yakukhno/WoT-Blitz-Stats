@@ -7,7 +7,7 @@
     android:background="@color/background_material_dark">
 
 
-    <com.rey.material.widget.EditText
+    <EditText
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
