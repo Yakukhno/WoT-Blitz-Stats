@@ -1,4 +1,4 @@
-package com.example.ivan.wotblitzstats;
+package com.wotblitzstats.activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -11,7 +11,8 @@ import android.widget.EditText;
 
 import android.widget.TextView;
 
-import com.example.ivan.http.FetchHttp;
+import com.wotblitzstats.http.FetchHttp;
+import com.wotblitzstats.ivan.activities.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;

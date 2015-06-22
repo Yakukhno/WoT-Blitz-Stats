@@ -1,4 +1,4 @@
-package com.example.ivan.http;
+package com.wotblitzstats.http;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

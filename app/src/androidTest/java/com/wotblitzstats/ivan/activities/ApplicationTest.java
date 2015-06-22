@@ -1,4 +1,4 @@
-package com.example.ivan.wotblitzstats;
+package com.wotblitzstats.ivan.activities;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

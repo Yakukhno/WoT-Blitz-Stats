@@ -1,9 +1,11 @@
-package com.example.ivan.wotblitzstats;
+package com.wotblitzstats.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import com.wotblitzstats.ivan.activities.R;
 
 import java.util.ArrayList;
 
